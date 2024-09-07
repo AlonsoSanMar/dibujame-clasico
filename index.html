@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dibujame</title>
+    <link rel="stylesheet" href="styles/index.css">
+</head>
+
+<body>
+
+    <div id="contenedor">
+        <div id="opciones">
+            <div>
+                <button type="button" id="btnDescargar">Descargar</button>
+                <button type="button" id="limpia">Limpia</button>
+                <button type="button" id="undo"><-</button>
+            </div>
+
+            <div>
+                <span id="display-tam">Tamaño: </span>
+                <input type="range" id="tamPincel" min="5" max="50" step="5" />
+            </div>
+    
+    
+            <div>
+                <label>Color: </label>
+                <input type="color" id="colorSelect" value="#ff0000">
+            </div>
+
+
+            <div id="figuras">
+                <p>Figuras:</p>
+                <button type="button" class="figura" id="lineaRecta">Recta</button>
+            </div>
+        </div>
+        
+
+        <div id="canvasWrapper">
+            <canvas id="canvasBoard" width="800px" height="600px"></canvas>
+            <div id="resizeHandle"></div>
+        </div>
+
+    </div>
+
+    <script type="module" src="scripts/index.js"></script>
+</body>
+
+</html>
