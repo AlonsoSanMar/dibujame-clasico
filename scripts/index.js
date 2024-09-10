@@ -1,22 +1,28 @@
 import { descargarCanvasComoJPEG } from './descargarCanvas.js';
 import { redimenzionarCanvas } from './redimenzionarCanvas.js';
+import * as util from './utilsDibujar.js';
 
 
 const canvas = document.getElementById("canvasBoard");
+canvas.width = window.innerWidth - 300;
+
 const ctx = canvas.getContext("2d");
 const resizeHandle = document.getElementById('resizeHandle');
 
-ctx.fillRect(0, 0, 800, 600);
+ctx.fillRect(0, 0, window.innerWidth, 600);
 
 let dibuja = false;
 let tamGrueso = 10;
 let color = document.getElementById('colorSelect').value;
-let imgUndo = ctx.getImageData(0, 0, canvas.width, canvas.height);
+let imgUndo = [ctx.getImageData(0, 0, canvas.width, canvas.height)];
 
 //FIGURAS
 let imgGuardada =  null;
 let puntoInicio = null;
-let recta = false;
+let libre = document.getElementById('dibujoLibre');
+let recta = document.getElementById('lineaRecta');
+let cuadrado = document.getElementById('cuadrado');
+let circulo = document.getElementById('circulo');
 
 // Lógica para redimensionar el canvas
 redimenzionarCanvas(canvas, ctx, resizeHandle);
@@ -25,77 +31,66 @@ redimenzionarCanvas(canvas, ctx, resizeHandle);
 // Logica para dibujar
 
 document.getElementById("canvasBoard").addEventListener('mousedown', (e) => {
-    if(recta){
+    if(libre.classList.contains('active')){
+        dibuja = !dibuja;
+    }else if(recta.classList.contains('active')){
         if(puntoInicio === null){
-            puntoInicio = obtenerPosicion(e); 
+            puntoInicio = util.obtenerPosicion(canvas, e); 
             imgGuardada = ctx.getImageData(0, 0, canvas.width, canvas.height);
         }else {
-            dibujaRecta(e);
+            util.dibujaRecta(canvas, ctx, puntoInicio, e);
             puntoInicio = null;
             imgGuardada = null;
         }
-    }else{
-        dibuja = !dibuja;
+    }else if(cuadrado.classList.contains('active')){
+        if(puntoInicio === null){
+            puntoInicio = util.obtenerPosicion(canvas, e); 
+            imgGuardada = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        }else {
+            util.dibujaCuadrado(canvas, ctx, puntoInicio, e);
+            puntoInicio = null;
+            imgGuardada = null;
+        }
+    }else if(circulo.classList.contains('active')){
+        if(puntoInicio === null){
+            puntoInicio = util.obtenerPosicion(canvas, e); 
+            imgGuardada = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        }else {
+            util.dibujaCirculo(canvas, ctx, puntoInicio, e);
+            puntoInicio = null;
+            imgGuardada = null;
+        }
     }
-    imgUndo = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    imgUndo.unshift(ctx.getImageData(0, 0, canvas.width, canvas.height));
 })
 
 canvas.addEventListener('mouseup', () => {
     dibuja = false;
-    if (recta && puntoInicio !== null) {
+    if (recta.classList.contains('active') && puntoInicio !== null) {
         puntoInicio = null;
     }
+    if (cuadrado.classList.contains('active') && puntoInicio !== null) {
+        puntoInicio = null;
+    }
+    if (circulo.classList.contains('active') && puntoInicio !== null) {
+        puntoInicio = null;
+    }
+
 });
 
 canvas.addEventListener('mousemove', (e) => {
     if (dibuja) {
-        dibujar(e);
-    } else if (recta && puntoInicio !== null) {
-        previsualizarRecta(e);
+        util.dibujar(canvas, ctx, e);
+    } else if (recta.classList.contains('active') && puntoInicio !== null) {
+        util.previsualizarRecta(canvas, ctx, imgGuardada, puntoInicio, e);
+    } else if (cuadrado.classList.contains('active') && puntoInicio !== null){
+        util.previsualizarCuadrado(canvas, ctx, imgGuardada, puntoInicio, e);
+    }else if (circulo.classList.contains('active') && puntoInicio !== null){
+        util.previsualizarCirculo(canvas, ctx, imgGuardada, puntoInicio, e);
     }
 });
 
 //------------------------------------------------------------------
-
-function obtenerPosicion(e){
-    const rect = canvas.getBoundingClientRect();
-    let x = e.clientX - rect.left;
-    let y = e.clientY - rect.top;
-    return {x, y};
-}
-
-function dibujar(e) {
-    const {x, y} = obtenerPosicion(e);
-
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y, tamGrueso, tamGrueso);
-}
-
-function previsualizarRecta(e){
-    ctx.putImageData(imgGuardada, 0, 0);
-
-    const {x: xFin, y: yFin} = obtenerPosicion(e);
-    ctx.beginPath();
-    ctx.moveTo(puntoInicio.x, puntoInicio.y);
-    ctx.lineTo(xFin, yFin);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = tamGrueso;
-    ctx.stroke();
-    ctx.closePath();
-}
-
-function dibujaRecta(e){
-    const {x: xFin, y: yFin} = obtenerPosicion(e);
-
-    ctx.beginPath();
-    ctx.moveTo(puntoInicio.x, puntoInicio.y);
-    ctx.lineTo(xFin, yFin);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = tamGrueso;
-    ctx.stroke();
-    ctx.closePath();
-
-}
 
 
 //funciones para modificar opciones
@@ -109,15 +104,53 @@ document.getElementById('colorSelect').addEventListener('change', () => {
     color = document.getElementById('colorSelect').value;
 });
 
+const figuras = document.getElementsByClassName('figuras');
 // funciones para dibujar las figuras
-document.getElementById('lineaRecta').addEventListener('click',()=> {
-    recta = !recta;
-    if(recta){
-        document.getElementById('lineaRecta').classList.add('active');
+function limpiaSelecciones(actual){
+    for (let i = 0; i < figuras.length; i++) {
+        if(actual !== figuras[i]){
+            figuras[i].classList.remove("active");
+        }
+    }
+}
+
+document.getElementById('dibujoLibre').addEventListener('click',()=> {
+    if(!libre.classList.contains('active')){
+        libre.classList.add('active');
+        limpiaSelecciones(libre);
     }else{
-        document.getElementById('lineaRecta').classList.remove('active');
+        libre.classList.remove('active');
     }
 })
+
+document.getElementById('lineaRecta').addEventListener('click',()=> {
+    if(!recta.classList.contains('active')){
+        recta.classList.add('active');
+        limpiaSelecciones(recta);
+    }else{
+        recta.classList.remove('active');
+    }
+})
+
+
+document.getElementById('cuadrado').addEventListener('click',()=> {
+    if(!cuadrado.classList.contains('active')){
+        cuadrado.classList.add('active');
+        limpiaSelecciones(cuadrado);
+    }else{
+        cuadrado.classList.remove('active');
+    }
+})
+
+document.getElementById('circulo').addEventListener('click',()=> {
+    if(!circulo.classList.contains('active')){
+        circulo.classList.add('active');
+        limpiaSelecciones(circulo);
+    }else{
+        circulo.classList.remove('active');
+    }
+})
+
 
 //Limpiar el canvas
 document.getElementById('limpia').addEventListener('click', () => {
@@ -127,7 +160,9 @@ document.getElementById('limpia').addEventListener('click', () => {
 
 //UNDO
 document.getElementById('undo').addEventListener('click', () => {
-    ctx.putImageData(imgUndo,0,0);
+    if(imgUndo.length > 0){
+        ctx.putImageData(imgUndo.shift(),0,0);
+    }
 })
 
 //display de datos

@@ -6,45 +6,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dibujame</title>
     <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/98.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+</head>
 </head>
 
-<body>
+<body class="window vh-100">
+    <div class="title-bar mb-2">
+        <div class="title-bar-text fs-3">Dibujame</div>
+      </div>
 
-    <div id="contenedor">
-        <div id="opciones">
-            <div>
-                <button type="button" id="btnDescargar">Descargar</button>
-                <button type="button" id="limpia">Limpia</button>
-                <button type="button" id="undo"><-</button>
-            </div>
 
-            <div>
-                <span id="display-tam">Tamaño: </span>
-                <input type="range" id="tamPincel" min="5" max="50" step="5" />
-            </div>
+        <div class="container-fluid d-flex justify-content-start align-items-center">
+
+            <div class="window border p-2 text-center m-2">
+                <div class="title-bar mb-2">
+                    <div class="title-bar-text fs-5">Opciones</div>
+                  </div>
     
+                <div class="col mb-3 d-flex justify-content-center align-items-center gap-2">
+                    <button type="button" class="btn-opciones w-25" id="btnDescargar" data-text="Descargar"><i class="fa-solid fa-download"></i></button>
+                    <button type="button" class="btn-opciones" id="limpia" data-text="Borrar"><i class="fa-solid fa-eraser"></i></button>
+                    <button type="button" class="btn-opciones" id="undo" data-text="Deshacer"><i class="fa-solid fa-rotate-left"></i></button>
+                </div>
     
-            <div>
-                <label>Color: </label>
-                <input type="color" id="colorSelect" value="#ff0000">
-            </div>
-
-
-            <div id="figuras">
-                <p>Figuras:</p>
-                <button type="button" class="figura" id="lineaRecta">Recta</button>
-            </div>
-        </div>
+                <div class="col mb-3">
+                    <span id="display-tam" class="fs-6">Tamaño: </span>
+                    <input class="input-group-lg" type="range" id="tamPincel" min="5" max="50" step="5" value="10"/>
+                </div>
         
-
-        <div id="canvasWrapper">
-            <canvas id="canvasBoard" width="800px" height="600px"></canvas>
-            <div id="resizeHandle"></div>
+                
+                <p class="fs-6">Color y Relleno: </p>
+                <div class="col mb-3">
+                    <input type="color" id="colorSelect" value="#ff0000">
+                    <input type="color" id="rellenoSelect" value="#000000">
+                </div>
+    
+    
+                <p class="fs-6">Figuras:</p>
+                <div class="m-2" id="figuras">
+                    <button type="button" class="figuras btn-opciones active" id="dibujoLibre" data-text="Libre"><i class="fa-solid fa-pencil"></i></button>
+                    <button type="button" class="figuras btn-opciones" id="lineaRecta" data-text="Recta"><i class="fa-solid fa-ruler"></i></button>
+                    <button type="button" class="figuras btn-opciones" id="cuadrado" data-text="Cuadrado"><i class="fa-regular fa-square"></i></i></button>
+                    <button type="button" class="figuras btn-opciones" id="circulo" data-text="Circulo"><i class="fa-regular fa-circle"></i></button>
+                </div>
+    
+            </div>
+            
+            <div class="mt-3" id="canvasWrapper">
+                <canvas id="canvasBoard" height="600px"></canvas>                
+                <span id="resizeHandle"></span>
+            </div>
+    
         </div>
 
-    </div>
+
+    <footer class="status-bar mt-3 text-center">
+      <a class="status-bar-field" href="https://github.com/AlonsoSanMar" target="_blank"> <i class="fab fa-github"></i> GitHub</a>
+      <a class="status-bar-field" href="https://www.linkedin.com/in/alonsos%C3%A1nchezmart%C3%ADnez/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+    </footer>
+
 
     <script type="module" src="scripts/index.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
 </body>
 
 </html>
