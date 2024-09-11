@@ -11,7 +11,7 @@ export function dibujar(canvas, ctx, e) {
     const { x, y } = obtenerPosicion(canvas, e);
     const tamGrueso = document.getElementById('tamPincel').value;
     const color = document.getElementById('colorSelect').value;
-
+    
     ctx.fillStyle = color;
     ctx.fillRect(x, y, tamGrueso, tamGrueso);
 }
@@ -130,4 +130,34 @@ export function dibujaCirculo(canvas, ctx, puntoInicio, e) {
     ctx.fill();
     ctx.stroke();
     ctx.closePath();
+}
+
+
+// Texto
+export function dibujaTexto(canvas, ctx, puntoInicio){
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.style.position = 'absolute';
+        input.style.left = puntoInicio.x + canvas.getBoundingClientRect().left + "px";
+        input.style.top = puntoInicio.y + canvas.getBoundingClientRect().top + "px";
+        input.style.fontSize = '16px';
+        document.body.appendChild(input);
+
+        input.focus();
+    
+        input.addEventListener('blur', () => {
+            const text = input.value;
+            if (text) {                
+                ctx.font = `${document.getElementById('fuenteSize').value}px Arial`;
+                ctx.fillStyle = document.getElementById('colorSelect').value; 
+                ctx.fillText(text, puntoInicio.x, puntoInicio.y);
+            }
+            document.body.removeChild(input);
+        });
+    
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                input.blur(); 
+            }
+        })
 }

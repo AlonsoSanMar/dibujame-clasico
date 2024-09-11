@@ -23,7 +23,7 @@
       </div>
 
 
-        <div class="container-fluid d-flex justify-content-start align-items-center">
+        <div class="container-fluid d-flex justify-content-start align-items-center flex-wrap">
 
             <div class="window border p-2 text-center m-2">
                 <div class="title-bar mb-2">
@@ -50,17 +50,28 @@
     
     
                 <p class="fs-6">Figuras:</p>
-                <div class="m-2" id="figuras">
-                    <button type="button" class="figuras btn-opciones active" id="dibujoLibre" data-text="Libre"><i class="fa-solid fa-pencil"></i></button>
-                    <button type="button" class="figuras btn-opciones" id="lineaRecta" data-text="Recta"><i class="fa-solid fa-ruler"></i></button>
-                    <button type="button" class="figuras btn-opciones" id="cuadrado" data-text="Cuadrado"><i class="fa-regular fa-square"></i></i></button>
-                    <button type="button" class="figuras btn-opciones" id="circulo" data-text="Circulo"><i class="fa-regular fa-circle"></i></button>
+                <div class="mb-2 row" id="figuras">
+                    <div class="row gap-2">
+                        <button type="button" class="col figuras btn-opciones active" id="dibujoLibre" data-text="Libre"><i class="fa-solid fa-pencil"></i></button>
+                        <button type="button" class="col figuras btn-opciones" id="lineaRecta" data-text="Recta"><i class="fa-solid fa-ruler"></i></button>
+                        <button type="button" class="col figuras btn-opciones" id="cuadrado" data-text="Cuadrado"><i class="fa-regular fa-square"></i></i></button>
+                    </div>
+                    <div class="row gap-2">
+
+                        <button type="button" class="col figuras btn-opciones" id="circulo" data-text="Circulo"><i class="fa-regular fa-circle"></i></button>
+                        <button type="button" class="col figuras btn-opciones" id="texto" data-text="Texto"><i class="fa-solid fa-font"></i></button>
+                    </div>
+                </div>
+
+                <p class="fs-6">Fuente:</p>
+                <div>                    
+                    <input type="number" name="fuenteSize" id="fuenteSize" value="16" max="50" min="12" step="3" class="fs-6 w-25 text-center">
                 </div>
     
             </div>
             
             <div class="mt-3" id="canvasWrapper">
-                <canvas id="canvasBoard" height="600px"></canvas>                
+                <canvas id="canvasBoard" height="550px"></canvas>                
                 <span id="resizeHandle"></span>
             </div>
     

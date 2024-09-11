@@ -4,12 +4,12 @@ import * as util from './utilsDibujar.js';
 
 
 const canvas = document.getElementById("canvasBoard");
-canvas.width = window.innerWidth - 300;
+canvas.width = window.innerWidth - 500;
 
 const ctx = canvas.getContext("2d");
 const resizeHandle = document.getElementById('resizeHandle');
 
-ctx.fillRect(0, 0, window.innerWidth, 600);
+ctx.fillRect(0, 0, canvas.width, 550);
 
 let dibuja = false;
 let tamGrueso = 10;
@@ -23,6 +23,7 @@ let libre = document.getElementById('dibujoLibre');
 let recta = document.getElementById('lineaRecta');
 let cuadrado = document.getElementById('cuadrado');
 let circulo = document.getElementById('circulo');
+let texto = document.getElementById('texto');
 
 // Lógica para redimensionar el canvas
 redimenzionarCanvas(canvas, ctx, resizeHandle);
@@ -30,7 +31,8 @@ redimenzionarCanvas(canvas, ctx, resizeHandle);
 
 // Logica para dibujar
 
-document.getElementById("canvasBoard").addEventListener('mousedown', (e) => {
+
+document.getElementById("canvasBoard").addEventListener('mousedown' || 'touchstart', (e) => {
     if(libre.classList.contains('active')){
         dibuja = !dibuja;
     }else if(recta.classList.contains('active')){
@@ -60,11 +62,13 @@ document.getElementById("canvasBoard").addEventListener('mousedown', (e) => {
             puntoInicio = null;
             imgGuardada = null;
         }
+    }else if(texto.classList.contains('active')){
+        puntoInicio = util.obtenerPosicion(canvas, e); 
     }
     imgUndo.unshift(ctx.getImageData(0, 0, canvas.width, canvas.height));
 })
 
-canvas.addEventListener('mouseup', () => {
+canvas.addEventListener('mouseup' || 'touchend', () => {
     dibuja = false;
     if (recta.classList.contains('active') && puntoInicio !== null) {
         puntoInicio = null;
@@ -75,10 +79,14 @@ canvas.addEventListener('mouseup', () => {
     if (circulo.classList.contains('active') && puntoInicio !== null) {
         puntoInicio = null;
     }
+    if (texto.classList.contains('active') && puntoInicio !== null) {
+        util.dibujaTexto(canvas, ctx, puntoInicio);
+        puntoInicio = null;
+    }
 
 });
 
-canvas.addEventListener('mousemove', (e) => {
+canvas.addEventListener('mousemove' || 'touchmove', (e) => {
     if (dibuja) {
         util.dibujar(canvas, ctx, e);
     } else if (recta.classList.contains('active') && puntoInicio !== null) {
@@ -148,6 +156,15 @@ document.getElementById('circulo').addEventListener('click',()=> {
         limpiaSelecciones(circulo);
     }else{
         circulo.classList.remove('active');
+    }
+})
+
+document.getElementById('texto').addEventListener('click',()=> {
+    if(!texto.classList.contains('active')){
+        texto.classList.add('active');
+        limpiaSelecciones(texto);
+    }else{
+        texto.classList.remove('active');
     }
 })
 
