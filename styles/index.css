@@ -96,3 +96,11 @@
     text-decoration: none;
     font-size: 18px;
 }
+
+.title-bar-titulo {
+    align-items: center;
+    background: linear-gradient(90deg,rgb(11, 87, 6),#17a30d);
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 2px 3px 3px;
+  }

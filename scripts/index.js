@@ -4,7 +4,12 @@ import * as util from './utilsDibujar.js';
 
 
 const canvas = document.getElementById("canvasBoard");
-canvas.width = window.innerWidth - 500;
+
+if(window.innerWidth < 769){
+    canvas.width = window.innerWidth;
+} else {
+    canvas.width = window.innerWidth - 500;
+}
 
 const ctx = canvas.getContext("2d");
 const resizeHandle = document.getElementById('resizeHandle');
@@ -31,72 +36,75 @@ redimenzionarCanvas(canvas, ctx, resizeHandle);
 
 // Logica para dibujar
 
-
-document.getElementById("canvasBoard").addEventListener('mousedown' || 'touchstart', (e) => {
+const startEvent = (e) => {
+    let event = e.type.includes('touch') ? e.touches[0] : e;
     if(libre.classList.contains('active')){
         dibuja = !dibuja;
-    }else if(recta.classList.contains('active')){
+    } else if(recta.classList.contains('active')){
         if(puntoInicio === null){
-            puntoInicio = util.obtenerPosicion(canvas, e); 
+            puntoInicio = util.obtenerPosicion(canvas, event); 
             imgGuardada = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        }else {
-            util.dibujaRecta(canvas, ctx, puntoInicio, e);
+        } else {
+            util.dibujaRecta(canvas, ctx, puntoInicio, event);
             puntoInicio = null;
             imgGuardada = null;
         }
-    }else if(cuadrado.classList.contains('active')){
+    } else if(cuadrado.classList.contains('active')){
         if(puntoInicio === null){
-            puntoInicio = util.obtenerPosicion(canvas, e); 
+            puntoInicio = util.obtenerPosicion(canvas, event); 
             imgGuardada = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        }else {
-            util.dibujaCuadrado(canvas, ctx, puntoInicio, e);
+        } else {
+            util.dibujaCuadrado(canvas, ctx, puntoInicio, event);
             puntoInicio = null;
             imgGuardada = null;
         }
-    }else if(circulo.classList.contains('active')){
+    } else if(circulo.classList.contains('active')){
         if(puntoInicio === null){
-            puntoInicio = util.obtenerPosicion(canvas, e); 
+            puntoInicio = util.obtenerPosicion(canvas, event); 
             imgGuardada = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        }else {
-            util.dibujaCirculo(canvas, ctx, puntoInicio, e);
+        } else {
+            util.dibujaCirculo(canvas, ctx, puntoInicio, event);
             puntoInicio = null;
             imgGuardada = null;
         }
-    }else if(texto.classList.contains('active')){
-        puntoInicio = util.obtenerPosicion(canvas, e); 
+    } else if(texto.classList.contains('active')){
+        puntoInicio = util.obtenerPosicion(canvas, event); 
     }
     imgUndo.unshift(ctx.getImageData(0, 0, canvas.width, canvas.height));
-})
+};
 
-canvas.addEventListener('mouseup' || 'touchend', () => {
+const endEvent = () => {
     dibuja = false;
-    if (recta.classList.contains('active') && puntoInicio !== null) {
-        puntoInicio = null;
-    }
-    if (cuadrado.classList.contains('active') && puntoInicio !== null) {
-        puntoInicio = null;
-    }
-    if (circulo.classList.contains('active') && puntoInicio !== null) {
-        puntoInicio = null;
-    }
     if (texto.classList.contains('active') && puntoInicio !== null) {
         util.dibujaTexto(canvas, ctx, puntoInicio);
         puntoInicio = null;
     }
+    puntoInicio = null;
+};
 
-});
-
-canvas.addEventListener('mousemove' || 'touchmove', (e) => {
+const moveEvent = (e) => {
+    let event = e.type.includes('touch') ? e.touches[0] : e;
     if (dibuja) {
-        util.dibujar(canvas, ctx, e);
+        util.dibujar(canvas, ctx, event);
     } else if (recta.classList.contains('active') && puntoInicio !== null) {
-        util.previsualizarRecta(canvas, ctx, imgGuardada, puntoInicio, e);
-    } else if (cuadrado.classList.contains('active') && puntoInicio !== null){
-        util.previsualizarCuadrado(canvas, ctx, imgGuardada, puntoInicio, e);
-    }else if (circulo.classList.contains('active') && puntoInicio !== null){
-        util.previsualizarCirculo(canvas, ctx, imgGuardada, puntoInicio, e);
+        util.previsualizarRecta(canvas, ctx, imgGuardada, puntoInicio, event);
+    } else if (cuadrado.classList.contains('active') && puntoInicio !== null) {
+        util.previsualizarCuadrado(canvas, ctx, imgGuardada, puntoInicio, event);
+    } else if (circulo.classList.contains('active') && puntoInicio !== null){
+        util.previsualizarCirculo(canvas, ctx, imgGuardada, puntoInicio, event);
     }
-});
+};
+
+// Agrega los listeners para mouse y touch
+canvas.addEventListener('mousedown', startEvent);
+canvas.addEventListener('touchstart', startEvent);
+
+canvas.addEventListener('mouseup', endEvent);
+canvas.addEventListener('touchend', endEvent);
+
+canvas.addEventListener('mousemove', moveEvent);
+canvas.addEventListener('touchmove', moveEvent);
+
 
 //------------------------------------------------------------------
 
