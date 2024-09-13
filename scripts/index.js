@@ -7,14 +7,16 @@ const canvas = document.getElementById("canvasBoard");
 
 if(window.innerWidth < 769){
     canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight - 100;
 } else {
     canvas.width = window.innerWidth - 500;
+    canvas.height = 550;
 }
 
 const ctx = canvas.getContext("2d");
 const resizeHandle = document.getElementById('resizeHandle');
 
-ctx.fillRect(0, 0, canvas.width, 550);
+ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 let dibuja = false;
 let tamGrueso = 10;
@@ -74,7 +76,7 @@ const startEvent = (e) => {
     imgUndo.unshift(ctx.getImageData(0, 0, canvas.width, canvas.height));
 };
 
-const endEvent = () => {
+const endEvent = (e) => {
     e.preventDefault();
     dibuja = false;
     if (texto.classList.contains('active') && puntoInicio !== null) {
