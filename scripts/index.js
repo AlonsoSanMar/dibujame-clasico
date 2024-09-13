@@ -37,6 +37,7 @@ redimenzionarCanvas(canvas, ctx, resizeHandle);
 // Logica para dibujar
 
 const startEvent = (e) => {
+    e.preventDefault();
     let event = e.type.includes('touch') ? e.touches[0] : e;
     if(libre.classList.contains('active')){
         dibuja = !dibuja;
@@ -74,6 +75,7 @@ const startEvent = (e) => {
 };
 
 const endEvent = () => {
+    e.preventDefault();
     dibuja = false;
     if (texto.classList.contains('active') && puntoInicio !== null) {
         util.dibujaTexto(canvas, ctx, puntoInicio);
@@ -83,6 +85,7 @@ const endEvent = () => {
 };
 
 const moveEvent = (e) => {
+    e.preventDefault();
     let event = e.type.includes('touch') ? e.touches[0] : e;
     if (dibuja) {
         util.dibujar(canvas, ctx, event);
