@@ -9,7 +9,7 @@ if(window.innerWidth < 769){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight - 100;
 } else {
-    canvas.width = window.innerWidth - 500;
+    canvas.width = window.innerWidth - 400;
     canvas.height = 550;
 }
 
@@ -31,6 +31,7 @@ let recta = document.getElementById('lineaRecta');
 let cuadrado = document.getElementById('cuadrado');
 let circulo = document.getElementById('circulo');
 let texto = document.getElementById('texto');
+let seleccionar = document.getElementById('seleccionar');
 
 // Lógica para redimensionar el canvas
 redimenzionarCanvas(canvas, ctx, resizeHandle);
@@ -136,49 +137,34 @@ function limpiaSelecciones(actual){
 }
 
 document.getElementById('dibujoLibre').addEventListener('click',()=> {
-    if(!libre.classList.contains('active')){
-        libre.classList.add('active');
+        libre.classList.toggle('active');
         limpiaSelecciones(libre);
-    }else{
-        libre.classList.remove('active');
-    }
 })
 
 document.getElementById('lineaRecta').addEventListener('click',()=> {
-    if(!recta.classList.contains('active')){
-        recta.classList.add('active');
+        recta.classList.toggle('active');
         limpiaSelecciones(recta);
-    }else{
-        recta.classList.remove('active');
-    }
 })
 
 
 document.getElementById('cuadrado').addEventListener('click',()=> {
-    if(!cuadrado.classList.contains('active')){
-        cuadrado.classList.add('active');
+        cuadrado.classList.toggle('active');
         limpiaSelecciones(cuadrado);
-    }else{
-        cuadrado.classList.remove('active');
-    }
 })
 
 document.getElementById('circulo').addEventListener('click',()=> {
-    if(!circulo.classList.contains('active')){
-        circulo.classList.add('active');
+        circulo.classList.toggle('active');
         limpiaSelecciones(circulo);
-    }else{
-        circulo.classList.remove('active');
-    }
 })
 
 document.getElementById('texto').addEventListener('click',()=> {
-    if(!texto.classList.contains('active')){
-        texto.classList.add('active');
+        texto.classList.toggle('active');
         limpiaSelecciones(texto);
-    }else{
-        texto.classList.remove('active');
-    }
+})
+
+document.getElementById('seleccionar').addEventListener('click',()=> {
+        seleccionar.classList.toggle('active');
+        limpiaSelecciones(seleccionar);
 })
 
 
@@ -203,3 +189,37 @@ document.getElementById('display-tam').innerHTML += tamGrueso;
 document.getElementById('btnDescargar').addEventListener('click', () => {
     descargarCanvasComoJPEG(canvas);
 });
+
+
+// Para subir imagenes
+const loadImage = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            const maxHeight = 550;
+            const aspectRatio = img.width / img.height;
+            
+            let newWidth = canvas.width;
+            let newHeight = canvas.height;
+
+            if (img.height > maxHeight) {
+                newHeight = maxHeight;
+                newWidth = newHeight * aspectRatio;
+            }
+
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
+document.getElementById('file-input').addEventListener('change', loadImage);
